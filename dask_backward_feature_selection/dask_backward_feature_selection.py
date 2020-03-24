@@ -1,5 +1,6 @@
 import numpy as np
-import dask.array as da
+import dask.bag as db
+import dask
 
 from sklearn.base import MetaEstimatorMixin, BaseEstimator
 from sklearn.model_selection import cross_val_score
@@ -13,13 +14,14 @@ def features_scorer(X, y,estimator, feature_indexes, cv=None, scoring=None):
     score = cross_val_score(estimator,X[:,feature_indexes],y,cv=cv,scoring= scoring).mean()
     feature_indexes = feature_indexes
 
-    return [score, feature_indexes]
+    return np.array([score, feature_indexes])
 
 class DaskBackwardFeatureSelector(MetaEstimatorMixin, BaseEstimator):
     def __init__(self, estimator, client,
                  k_features=1,
                  scoring=None,
                  cv=5,
+                 scatter = True
                  ):
 
         self.estimator = estimator
@@ -27,6 +29,7 @@ class DaskBackwardFeatureSelector(MetaEstimatorMixin, BaseEstimator):
         self.k_features = k_features
         self.cv = cv
         self.scoring = scoring
+        self.scatter = scatter
         
         
         self.is_fitted = False
@@ -36,25 +39,28 @@ class DaskBackwardFeatureSelector(MetaEstimatorMixin, BaseEstimator):
         start = X.shape[1]
         
         feature_list_ =  range(X.shape[1])
+
+        sorted_delayed = dask.delayed(sorted)
         
-        features_scorer_partial = partial(features_scorer, X,y,self.estimator,cv=self.cv,scoring=self.scoring)       
+        features_scorer_partial = partial(features_scorer, X,y,self.estimator,cv=self.cv,scoring=self.scoring) 
+
+        if self.scatter == True:
+            features_scorer_partial = self.client.scatter(features_scorer_partial)
         
         for step in reversed(range(self.k_features,start,1)):
             
-            combinations_ = list(combinations(feature_list_,step))
-            
-            
-            futures = self.client.map(features_scorer_partial,combinations_)
+            combinations_ = db.from_sequence(combinations(feature_list_,step))
 
-            results = da.from_delayed(futures)
-                
-            best_score_, feature_list_ = results[results[:,0].argsort()[::-1]][1].compute().tolist()
-        
+            reults_bag = combinations_.map(features_scorer_partial)
+
+            result  = sorted_delayed(reults_bag,key=lambda a: a[0],reverse=True)[0].compute()
+
+            best_score_, feature_list_ = result.tolist()
+
             output = {}
             output['step'] = step
             output['feature_list_'] = feature_list_
             output['score'] = best_score_
-            del results
             outputs.append(output)
             
         self.metric_dict = outputs
