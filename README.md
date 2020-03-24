@@ -5,7 +5,7 @@ I created this due to the fact that mlxtend's SequentialFeatureSelector did not 
 
 Install
 -------
-
+::
    $ pip install git+https://github.com/prez38/dask_backward_feature_selection
 
 
