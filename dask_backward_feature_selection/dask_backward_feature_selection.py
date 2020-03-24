@@ -1,4 +1,5 @@
 import numpy as np
+import dask.array as da
 
 from sklearn.base import MetaEstimatorMixin, BaseEstimator
 from sklearn.model_selection import cross_val_score
@@ -45,18 +46,16 @@ class DaskBackwardFeatureSelector(MetaEstimatorMixin, BaseEstimator):
             
             futures = self.client.map(features_scorer_partial,combinations_)
 
-            result = self.client.gather(futures)
-    
-            result_np = np.array(result)
+            results = da.from_delayed(futures)
                 
-            best_score_, feature_list_ = result_np[result_np[:,0].argsort()[::-1]][1].tolist()
+            best_score_, feature_list_ = results[results[:,0].argsort()[::-1]][1].compute().tolist()
         
             output = {}
             output['step'] = step
             output['feature_list_'] = feature_list_
             output['score'] = best_score_
             #output['results_np'] = result_np
-            del result_np
+            del results
             outputs.append(output)
             
         self.metric_dict = outputs
