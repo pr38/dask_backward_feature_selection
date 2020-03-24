@@ -6,14 +6,13 @@ I created this due to the fact that mlxtend's SequentialFeatureSelector did not 
 
 Install
 -------
-via  ``pip``:
+via ``pip``:
 
 ::
-
-   # Install with conda
-   $ conda install dask-searchcv -c conda-forge
 
    # Install with pip
    $ pip install git+https://github.com/prez38/dask_backward_feature_selection
 
 
+Example
+-------
