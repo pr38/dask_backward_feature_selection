@@ -54,7 +54,6 @@ class DaskBackwardFeatureSelector(MetaEstimatorMixin, BaseEstimator):
             output['step'] = step
             output['feature_list_'] = feature_list_
             output['score'] = best_score_
-            #output['results_np'] = result_np
             del results
             outputs.append(output)
             
