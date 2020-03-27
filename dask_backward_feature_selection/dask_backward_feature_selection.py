@@ -62,9 +62,7 @@ class DaskBackwardFeatureSelector(MetaEstimatorMixin, BaseEstimator):
             output['feature_list_'] = feature_list_
             output['score'] = best_score_
             outputs.append(output)
-            
-        self.metric_dict = outputs
-            
+                        
         outputs.sort(key=lambda a: a['score'],reverse = True)
             
         self.k_feature_idx_ = outputs[0]['feature_list_']
