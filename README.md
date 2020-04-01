@@ -22,7 +22,7 @@ from dask.distributed import Client, LocalCluster
 
 from dask_backward_feature_selection import DaskBackwardFeatureSelector
 
-#You should be useing Dask's yarn or kubernates cluster developments
+#You should be useing Dask's yarn or kubernates cluster deployments
 #if you are going to be running this localy you are better off useing mlxtend's SequentialFeatureSelector 
 cluster = LocalCluster(3)
 client = Client(cluster)
