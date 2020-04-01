@@ -52,5 +52,5 @@ dfs.predict(X)
 #also DaskBackwardFeatureSelector can act as transformer.
 dfs.transform(X,y)
 
-#finally we can examine the best perfomring feature combination for each step, for other use cases (ie:one-standard-error rule).
+#finally we can examine the best performing feature combinations for each step, for other use cases (ie:one-standard-error rule).
 pd.DataFrame(dfs.metric_dict_ )
