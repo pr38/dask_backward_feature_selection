@@ -16,7 +16,6 @@ import numpy as np
 import pandas as pd
 
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.preprocessing import LabelEncoder
 from sklearn.datasets import load_boston,load_iris
 
 from dask.distributed import Client, LocalCluster
@@ -28,10 +27,9 @@ from dask_backward_feature_selection import DaskBackwardFeatureSelector
 cluster = LocalCluster(3)
 client = Client(cluster)
 
-le = LabelEncoder()
 boston = load_boston()
 X = boston['data']
-y = le.fit_transform(boston['target'])
+y = boston['target']
 
 dfs = DaskBackwardFeatureSelector(DecisionTreeRegressor(),client)
 #kwargs for DaskBackwardFeatureSelector are:
