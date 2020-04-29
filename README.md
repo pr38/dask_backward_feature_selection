@@ -1,6 +1,7 @@
 ## Dask Backward Feature Selection
 Backward step-wise feature selection using Dask, scikit-learn compatible.
-Scale out feature seletion useing distributed computing/Dask!
+
+Scale out feature seletion using distributed computing/Dask!
 
 I created this due to the fact that mlxtend's SequentialFeatureSelector did not use joblib in a Dask compatable way.
 
