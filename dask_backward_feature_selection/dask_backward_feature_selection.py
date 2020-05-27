@@ -12,7 +12,6 @@ from functools import partial
 
 def features_scorer(X, y,estimator, feature_indexes, cv=None, scoring=None):
     score = cross_val_score(estimator,X[:,feature_indexes],y,cv=cv,scoring= scoring).mean()
-    feature_indexes = feature_indexes
 
     return np.array([score, feature_indexes])
 
