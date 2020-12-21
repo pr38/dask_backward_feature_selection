@@ -75,7 +75,7 @@ class DaskBackwardFeatureSelector(MetaEstimatorMixin, BaseEstimator):
             """)
             
     def fit(self,X,y):
-        X, y = check_X_y(X, y)
+        X, y = check_X_y(X, y,accept_sparse = True)
         
         assert X.shape[1] > self.k_features
 
@@ -89,7 +89,7 @@ class DaskBackwardFeatureSelector(MetaEstimatorMixin, BaseEstimator):
     
     def transform(self,X,y=None):
         self.check_is_fitted()
-        X = check_array(X)
+        X = check_array(X,accept_sparse=True)
         
         return X[:,self.k_feature_idx_], y
     
